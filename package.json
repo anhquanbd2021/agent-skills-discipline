@@ -1,0 +1,16 @@
+{
+  "name": "agent-skills-discipline-demo",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Gatekeeper — run a scripted agent's change through six ordered quality gates; watch a sloppy change get blocked and a disciplined one ship.",
+  "scripts": {
+    "start": "node app/server.js",
+    "report": "node scripts/report.mjs",
+    "test": "node --test \"test/*.test.mjs\"",
+    "check": "npm test && npm run report"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

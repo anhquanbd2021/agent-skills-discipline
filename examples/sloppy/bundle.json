@@ -1,0 +1,54 @@
+{
+  "id": "sloppy",
+  "agent": "Fast agent — ships first, checks later",
+  "title": "Add discount-code field to checkout",
+  "summary": "Adds a discount input to checkout and applies the percentage to the total. Probably works — clicked through the flow once and the price updated.",
+  "claims": [
+    {
+      "text": "The change is small and self-contained."
+    },
+    {
+      "text": "I'll add tests later, once the discount rules settle."
+    },
+    {
+      "text": "Probably works — clicked through checkout once and the total updated."
+    }
+  ],
+  "diff": {
+    "files": [
+      "src/checkout.html",
+      "src/discount.js",
+      "src/cart.js"
+    ],
+    "insertions": 148,
+    "deletions": 22
+  },
+  "evidence": {
+    "spec": {
+      "objectives": [
+        "Let shoppers apply a discount code at checkout."
+      ],
+      "acceptanceCriteria": [
+        "A valid code reduces the total by its percentage.",
+        "An invalid code is rejected with a visible message."
+      ]
+    },
+    "plan": {
+      "tasks": [
+        {
+          "title": "Add discount input to checkout template",
+          "verify": "Field renders and accepts a code"
+        },
+        {
+          "title": "Apply percentage to total in cart.js",
+          "verify": "Total reflects the discount"
+        }
+      ]
+    },
+    "release": {
+      "prDescription": "Adds discount code support to checkout.",
+      "rollback": "Revert the commit; the field is additive.",
+      "docsNote": "Will update the checkout docs if this ships."
+    }
+  }
+}

@@ -1,0 +1,614 @@
+/* ============================================================================
+   Gatekeeper — "Ink & Circuit" (Article Playbook house style)
+   Dark-first forensic lab bench. Claims get a voice (quoted, amber); evidence
+   gets a structure (mono). The six-gate pipeline is the visual spine.
+   All color values resolve through :root tokens only.
+   ============================================================================ */
+
+/* ---- Tokens --------------------------------------------------------------- */
+:root{
+  color-scheme:dark light;
+
+  /* color — dark (default theme) */
+  --bg:#0B1217;             /* page ink */
+  --surface:#131D26;        /* panels */
+  --surface-inset:#0D161D;  /* wells: claims, gates, code, excuse rows */
+  --surface-raise:#18242E;  /* hover state on inset surfaces */
+  --border:#2A3D4A;         /* hairlines, card borders */
+  --border-strong:#3D5A6B;  /* emphasized borders, pending rail */
+  --text:#E8F0F4;           /* primary */
+  --text-2:#A9BDC9;         /* secondary / .muted */
+  --accent:#2DD4BF;         /* circuit teal (links, eyebrows, hover) */
+  --accent-dim:#1E8F80;     /* teal for borders/dividers */
+  --on-accent:#06231F;      /* text on solid teal */
+  --warn:#E9B44D;           /* excuses, warning callout */
+  --ok:#4CC9A0;             /* pass text/borders */
+  --ok-strong:#35B589;      /* pass badge bg */
+  --on-ok:#04241A;
+  --fail:#F0958E;           /* fail text/borders */
+  --fail-strong:#B4443C;    /* fail badge bg */
+  --on-fail:#FFFFFF;
+  --fail-bg:#261517;        /* failed gate row tint */
+  --skip:#7A93A3;           /* skipped text/rail */
+  --focus:#5EEAD4;          /* focus ring */
+
+  /* type */
+  --font-display:"Space Grotesk",system-ui,sans-serif;
+  --font-sans:"Inter",system-ui,sans-serif;
+  --font-mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+  --fs-eyebrow:0.75rem;
+  --fs-small:0.8125rem;
+  --fs-body-s:0.875rem;
+  --fs-body:1rem;
+  --fs-lede:1.125rem;
+  --fs-h3:1.125rem;
+  --fs-h2:clamp(1.25rem,1rem + 1vw,1.5rem);
+  --fs-h1:clamp(2.5rem,1.6rem + 5vw,4.5rem);
+  --lh-tight:1.1;
+  --lh-title:1.25;
+  --lh-body:1.6;
+  --ls-eyebrow:0.14em;
+  --ls-tight:-0.02em;
+
+  /* space — 4px base */
+  --space-1:4px;
+  --space-2:8px;
+  --space-3:12px;
+  --space-4:16px;
+  --space-5:20px;
+  --space-6:24px;
+  --space-8:32px;
+  --space-10:40px;
+  --space-12:48px;
+  --space-16:64px;
+  --space-24:96px;
+
+  /* radius */
+  --r-sm:6px;
+  --r-md:10px;
+  --r-lg:14px;
+  --r-pill:999px;
+
+  /* shadow */
+  --shadow-1:0 1px 2px rgb(0 0 0 /.35);
+  --shadow-2:0 8px 24px rgb(0 0 0 /.40);
+  --shadow-2-light:0 8px 24px rgb(21 34 40 /.08);
+
+  /* motion */
+  --dur-fast:120ms;
+  --dur-med:200ms;
+  --dur-slow:320ms;
+  --ease-out:cubic-bezier(.22,.68,.35,1);
+  --ease-in:cubic-bezier(.5,0,.75,.4);
+  --ease-spring:cubic-bezier(.34,1.45,.44,1);
+
+  /* z-index — pb-shell owns the top layer; page content stays <100 */
+  --z-pill:2147483000;
+}
+
+@media (prefers-color-scheme: light){
+  :root{
+    --bg:#F2F5F4;
+    --surface:#FFFFFF;
+    --surface-inset:#EEF2F1;
+    --surface-raise:#E5EBE9;
+    --border:#D5DEDA;
+    --border-strong:#B7C4C0;
+    --text:#152228;
+    --text-2:#475A63;
+    --accent:#0D7A6C;
+    --accent-dim:#3FA392;
+    --on-accent:#FFFFFF;
+    --warn:#8A5A0B;
+    --ok:#146B52;
+    --ok-strong:#146B52;
+    --on-ok:#FFFFFF;
+    --fail:#B3261E;
+    --fail-strong:#B3261E;
+    --on-fail:#FFFFFF;
+    --fail-bg:#FBEBE9;
+    --skip:#647480;
+    --focus:#0D7A6C;
+    --shadow-2:var(--shadow-2-light);
+  }
+}
+
+/* ---- Base ------------------------------------------------------------------ */
+/* Scoped so zero rules reach the frozen .pb-shell anchor (it lives outside <main>). */
+main,.skip-link,main *,main *::before,main *::after{box-sizing:border-box}
+
+html{scroll-padding-bottom:var(--space-24)}
+
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font-sans);
+  font-size:var(--fs-body);
+  line-height:var(--lh-body);
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+
+main ::selection{background:var(--accent);color:var(--on-accent)}
+
+main{
+  max-width:1160px;
+  margin-inline:auto;
+  padding:var(--space-6) var(--space-5) var(--space-24);
+}
+@media (min-width:760px){main{padding-inline:var(--space-8)}}
+@media (min-width:1200px){main{padding-inline:var(--space-12)}}
+
+h1{
+  font-family:var(--font-display);
+  font-weight:700;
+  font-size:var(--fs-h1);
+  line-height:var(--lh-tight);
+  letter-spacing:var(--ls-tight);
+  margin:0 0 var(--space-5);
+  text-wrap:balance;
+}
+
+/* ---- Skip link (visible only on keyboard focus) ---------------------------- */
+.skip-link{
+  position:fixed;
+  top:var(--space-3);
+  left:var(--space-3);
+  z-index:90;
+  transform:translateY(-300%);
+  background:var(--accent);
+  color:var(--on-accent);
+  font-family:var(--font-sans);
+  font-size:var(--fs-small);
+  font-weight:600;
+  padding:10px 18px;
+  border-radius:var(--r-sm);
+  text-decoration:none;
+  transition:transform var(--dur-fast) var(--ease-out);
+}
+.skip-link:focus-visible{transform:translateY(0)}
+
+/* ---- Nav — pill links ------------------------------------------------------ */
+nav{
+  display:flex;
+  flex-wrap:wrap;
+  gap:var(--space-2);
+  margin-block:var(--space-6) 0;
+}
+nav a{
+  display:inline-flex;
+  align-items:center;
+  min-height:36px;
+  font-family:var(--font-mono);
+  font-size:var(--fs-small);
+  font-weight:500;
+  padding:var(--space-2) 14px;
+  border:1px solid var(--border);
+  border-radius:var(--r-pill);
+  color:var(--text-2);
+  background:transparent;
+  text-decoration:none;
+  transition:border-color var(--dur-fast) var(--ease-out),
+             color var(--dur-fast) var(--ease-out),
+             background-color var(--dur-fast) var(--ease-out);
+}
+nav a:hover{border-color:var(--accent);color:var(--text)}
+nav a[aria-current="page"]{
+  background:var(--accent);
+  color:var(--on-accent);
+  border-color:var(--accent);
+  font-weight:600;
+}
+nav a[aria-current="page"]:hover{border-color:var(--accent);color:var(--on-accent)}
+
+/* ---- Hero ------------------------------------------------------------------ */
+.hero{
+  display:grid;
+  gap:var(--space-6);
+  margin-block:var(--space-12) 56px;
+}
+@media (min-width:960px){
+  .hero{
+    grid-template-columns:7fr 5fr;
+    column-gap:var(--space-10);
+    align-items:end;
+  }
+}
+.hero h1{max-width:11ch}
+
+.eyebrow{
+  font-family:var(--font-mono);
+  font-size:var(--fs-eyebrow);
+  font-weight:600;
+  text-transform:uppercase;
+  letter-spacing:var(--ls-eyebrow);
+  color:var(--accent);
+  margin:0 0 var(--space-3);
+}
+
+.lede{
+  font-size:var(--fs-lede);
+  line-height:var(--lh-body);
+  color:var(--text-2);
+  max-width:62ch;
+  margin:0;
+}
+.lede em{font-style:italic;color:var(--text)}
+
+/* ---- Warning callout -------------------------------------------------------- */
+.warning{
+  background:var(--surface-inset);
+  border:1px solid var(--border);
+  border-left:3px solid var(--warn);
+  border-radius:var(--r-md);
+  padding:14px 18px;
+  font-size:var(--fs-body-s);
+  color:var(--text-2);
+  max-width:42ch;
+  margin:0;
+}
+.warning strong{color:var(--text)}
+
+/* ---- Panels ----------------------------------------------------------------- */
+.panel{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--r-lg);
+  padding:var(--space-6);
+  box-shadow:var(--shadow-2);
+}
+.panel h2{
+  font-family:var(--font-display);
+  font-weight:600;
+  font-size:var(--fs-h2);
+  line-height:var(--lh-title);
+  margin:0;
+}
+.panel > .muted{margin:var(--space-4) 0 0;max-width:70ch}
+
+/* ---- Workspace — the lab bench ---------------------------------------------- */
+.workspace{display:grid;gap:var(--space-6)}
+@media (min-width:880px){
+  .workspace{grid-template-columns:5fr 6fr;align-items:start}
+}
+.workspace + .panel{margin-top:var(--space-6)}
+
+/* ---- Agent picker ------------------------------------------------------------ */
+.agents{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  margin-block:var(--space-4) var(--space-5);
+}
+.agents button{
+  display:flex;
+  flex-direction:column;
+  gap:var(--space-1);
+  width:100%;
+  text-align:left;
+  padding:14px 16px;
+  font:inherit;
+  color:var(--text);
+  background:var(--surface-inset);
+  border:1px solid var(--border);
+  border-left:3px solid var(--border-strong);
+  border-radius:var(--r-md);
+  cursor:pointer;
+  transition:border-color var(--dur-fast) var(--ease-out),
+             background-color var(--dur-fast) var(--ease-out),
+             transform var(--dur-fast) var(--ease-out),
+             opacity var(--dur-fast) var(--ease-out);
+}
+.agents button strong{
+  font-family:var(--font-mono);
+  font-size:.9375rem;
+  font-weight:600;
+  color:var(--text);
+}
+.agents button small{
+  font-family:var(--font-sans);
+  font-size:var(--fs-small);
+  font-weight:400;
+  color:var(--text-2);
+}
+.agents button:not(:disabled):hover{
+  border-color:var(--accent-dim);
+  border-left-color:var(--accent);
+  background:var(--surface-raise);
+}
+.agents button:not(:disabled):active{
+  transform:scale(.99);
+  background:var(--surface-inset);
+}
+.agents button:disabled{opacity:.55;cursor:wait}
+
+/* ---- Bundle card — the agent's claims ---------------------------------------- */
+.bundle-card{
+  border-top:1px dashed var(--border-strong);
+  padding-top:var(--space-4);
+  margin-top:var(--space-5);
+}
+.bundle-card:empty{display:none}
+.bundle-card h3{
+  font-family:var(--font-display);
+  font-weight:600;
+  font-size:var(--fs-h3);
+  line-height:var(--lh-title);
+  margin:0 0 var(--space-2);
+}
+.bundle-card .muted{
+  font-family:var(--font-mono);
+  font-size:var(--fs-small);
+  margin:0;
+}
+.claims{
+  list-style:none;
+  margin:var(--space-3) 0 0;
+  padding:0;
+  display:flex;
+  flex-direction:column;
+  gap:var(--space-2);
+}
+.claims li{
+  background:var(--surface-inset);
+  border-left:3px solid var(--warn);
+  border-radius:var(--r-sm);
+  padding:var(--space-2) var(--space-3);
+  font-size:var(--fs-body-s);
+  font-style:italic;
+  color:var(--text-2);
+}
+
+/* ---- Section heading + verdict badge ----------------------------------------- */
+.section-heading{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:space-between;
+  align-items:start;
+  gap:var(--space-3);
+}
+@media (max-width:419px){.section-heading{flex-direction:column}}
+
+.badge{
+  display:inline-block;
+  white-space:nowrap;
+  font-family:var(--font-mono);
+  font-size:var(--fs-eyebrow);
+  font-weight:600;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  padding:5px 12px;
+  border-radius:var(--r-pill);
+  background:var(--surface-inset);
+  color:var(--text-2);
+  border:1px solid var(--border);
+}
+.badge.pass{
+  background:var(--ok-strong);
+  color:var(--on-ok);
+  border-color:transparent;
+  animation:verdict-pop var(--dur-med) var(--ease-spring);
+}
+.badge.fail{
+  background:var(--fail-strong);
+  color:var(--on-fail);
+  border-color:transparent;
+  animation:verdict-pop var(--dur-med) var(--ease-spring);
+}
+@keyframes verdict-pop{
+  from{transform:scale(.9)}
+  to{transform:scale(1)}
+}
+
+/* ---- Pipeline — the gate visualizer ------------------------------------------- */
+.pipeline{
+  list-style:none;
+  margin:var(--space-4) 0 0;
+  padding:0;
+  display:flex;
+  flex-direction:column;
+  gap:var(--space-2);
+  counter-reset:gate;
+}
+.gate{
+  counter-increment:gate;
+  display:flex;
+  align-items:baseline;
+  gap:var(--space-3);
+  padding:var(--space-3) var(--space-4);
+  border:1px solid var(--border);
+  border-left:4px solid var(--border-strong);
+  border-radius:var(--r-md);
+  background:var(--surface-inset);
+  transition:border-color var(--dur-med) var(--ease-out),
+             background-color var(--dur-med) var(--ease-out),
+             opacity var(--dur-med) var(--ease-out);
+}
+.gate::before{
+  content:counter(gate,decimal-leading-zero);
+  font-family:var(--font-mono);
+  font-size:var(--fs-small);
+  font-weight:500;
+  color:var(--skip);
+  flex:none;
+}
+.gate-phase{
+  font-family:var(--font-mono);
+  font-size:var(--fs-small);
+  font-weight:600;
+  letter-spacing:.06em;
+  min-width:96px;
+  flex:none;
+}
+.gate-principle{
+  font-size:var(--fs-body-s);
+  color:var(--text-2);
+  min-width:0;
+}
+.gate.pending{opacity:.72}
+.gate.pending .gate-phase{color:var(--skip)}
+.gate.pass{
+  border-left-color:var(--ok);
+  animation:gate-lit var(--dur-slow) var(--ease-spring);
+}
+.gate.pass .gate-phase{color:var(--ok)}
+.gate.fail{
+  border-left-color:var(--fail-strong);
+  background:var(--fail-bg);
+  animation:gate-lit var(--dur-slow) var(--ease-spring);
+}
+.gate.fail .gate-phase{color:var(--fail)}
+.gate.fail .gate-principle{color:var(--text)}
+.gate.skipped{
+  border-left-color:var(--border);
+  opacity:.5;
+  animation:gate-lit var(--dur-slow) var(--ease-spring);
+}
+.gate.skipped .gate-phase{color:var(--skip)}
+.gate.skipped .gate-principle{text-decoration:line-through}
+@keyframes gate-lit{
+  0%{transform:translateX(0);background-color:var(--surface-raise)}
+  45%{transform:translateX(4px)}
+  100%{transform:translateX(0)}
+}
+
+/* ---- Findings ----------------------------------------------------------------- */
+.findings{margin-top:var(--space-4)}
+.findings:empty{margin-top:0}
+.findings-list{
+  list-style:none;
+  margin:0;
+  padding:0;
+  display:flex;
+  flex-direction:column;
+  gap:var(--space-2);
+}
+.findings-list li{
+  background:var(--surface-inset);
+  border:1px solid var(--border);
+  border-left:4px solid var(--fail-strong);
+  border-radius:var(--r-sm);
+  padding:10px 14px;
+  font-size:var(--fs-body-s);
+  color:var(--text);
+  overflow-wrap:break-word;
+}
+.findings-list strong{
+  font-family:var(--font-mono);
+  font-weight:600;
+  color:var(--fail);
+}
+.findings-list .excuse-quote{color:var(--warn);font-weight:600}
+.findings-list em{color:var(--text-2);font-style:italic}
+
+/* ---- Excuses — anti-rationalization table -------------------------------------- */
+.excuses{
+  list-style:none;
+  margin:var(--space-4) 0 0;
+  padding:0;
+  display:flex;
+  flex-direction:column;
+  gap:var(--space-2);
+}
+.excuses li{
+  display:flex;
+  flex-direction:column;
+  gap:var(--space-1);
+  background:var(--surface-inset);
+  border-left:3px solid var(--warn);
+  border-radius:var(--r-sm);
+  padding:var(--space-2) var(--space-3);
+}
+@media (min-width:880px){
+  .excuses li{
+    display:grid;
+    grid-template-columns:minmax(220px,2fr) 3fr;
+    gap:var(--space-4);
+    align-items:baseline;
+  }
+}
+.excuse-quote{font-weight:600;color:var(--warn)}
+.excuses .excuse-quote{
+  font-family:var(--font-display);
+  font-size:var(--fs-body-s);
+}
+.excuse-meta{font-size:var(--fs-small);color:var(--text-2)}
+
+/* ---- Code, links, footer -------------------------------------------------------- */
+code{
+  font-family:var(--font-mono);
+  font-size:.85em;
+  background:var(--surface-inset);
+  border:1px solid var(--border);
+  border-radius:var(--r-sm);
+  padding:1px 6px;
+}
+
+main a{
+  color:var(--accent);
+  text-decoration:underline;
+  text-decoration-color:transparent;
+  text-underline-offset:2px;
+  transition:text-decoration-color var(--dur-fast) var(--ease-out);
+}
+main a:hover{text-decoration-color:currentColor}
+.lede a,.muted a{text-decoration-color:currentColor}
+
+.page-foot{
+  margin:var(--space-10) 0 0;
+  font-size:var(--fs-body-s);
+  color:var(--text-2);
+}
+.page-foot a{color:var(--accent)}
+
+/* ---- Guide page ------------------------------------------------------------------ */
+.page-head{margin-block:var(--space-12)}
+.page-head h1{max-width:18ch}
+
+.guide-section{padding:var(--space-5) var(--space-6)}
+.page-head + .guide-section{margin-top:var(--space-8)}
+.guide-section + .guide-section{margin-top:var(--space-4)}
+.guide-section p{
+  font-size:var(--fs-body);
+  color:var(--text-2);
+  max-width:70ch;
+  margin:0;
+}
+.guide-section h2{margin:0 0 var(--space-3)}
+.guide-section p + p,
+.guide-section .muted{margin-top:var(--space-3)}
+.guide-section .muted{font-size:var(--fs-small)}
+.guide-section ul{
+  margin:var(--space-3) 0;
+  padding-left:var(--space-5);
+  color:var(--text-2);
+  max-width:70ch;
+}
+.guide-section li{margin-bottom:var(--space-2)}
+.guide-section li::marker{color:var(--accent)}
+.guide-section strong{color:var(--text)}
+
+/* ---- Focus — never suppressed ----------------------------------------------------- */
+main a:focus-visible,
+main button:focus-visible,
+.skip-link:focus-visible{
+  outline:2px solid var(--focus);
+  outline-offset:2px;
+}
+
+/* ---- Compact (<480px) ---------------------------------------------------------------- */
+@media (max-width:479px){
+  .panel{padding:var(--space-4)}
+  .guide-section{padding:var(--space-4)}
+  h1{font-size:clamp(2rem,1.4rem + 5vw,2.5rem)}
+  .gate-phase{min-width:72px}
+}
+
+/* ---- Reduced motion — all transitions and keyframe work off -------------------------- */
+@media (prefers-reduced-motion:reduce){
+  main,.skip-link,main *,main *::before,main *::after{
+    animation:none !important;
+    transition:none !important;
+  }
+}

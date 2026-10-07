@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Gatekeeper guide — what each of the six quality gates asks for, and why claims are not evidence.">
+  <meta name="color-scheme" content="dark light">
+  <title>Gatekeeper — guide</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@600;700&display=swap">
+  <link rel="stylesheet" href="/styles.css">
+<!-- pb-shell --><link rel="stylesheet" href="./pb-shell.css"><!-- pb-shell --><!-- pb-back --><link rel="stylesheet" href="./pb-back.css"><!-- pb-back --></head>
+<body>
+<a class="skip-link" href="#main">Skip to main content</a>
+<main id="main">
+  <nav aria-label="Primary"><a href="/">Lab</a><a aria-current="page" href="/guide.html">Guide</a><a href="https://github.com/anhquanbd2021/agent-skills-discipline">Source</a></nav>
+  <header class="page-head"><p class="eyebrow">Guide</p><h1>What each gate asks for</h1>
+    <p class="lede">Every gate has an evidence contract — fields that must exist and be real, not just present. Inspired by the skill structure in <code>addyosmani/agent-skills</code>: process, rationalizations, verification.</p></header>
+
+  <section class="panel guide-section"><h2>1 · DEFINE — "Spec before code"</h2>
+    <p>A spec with <code>objectives</code> and <code>acceptanceCriteria</code> — intent a reviewer can check. A title is not a spec; "make it better" is not a criterion.</p>
+    <p class="muted">Catches: no spec, hollow spec (objectives but no acceptance criteria), the "too small to need a spec" excuse.</p></section>
+
+  <section class="panel guide-section"><h2>2 · PLAN — "Small, atomic tasks"</h2>
+    <p>A task list where every task carries its own <code>verify</code> step. A plan without a per-step check is a wish list.</p>
+    <p class="muted">Catches: no plan, tasks with no verify field.</p></section>
+
+  <section class="panel guide-section"><h2>3 · BUILD — "One slice at a time"</h2>
+    <p>A bounded diff: ≤ 12 files, ≤ 400 insertions. The point isn't the exact numbers — it's that the change is small enough for a human to actually review.</p>
+    <p class="muted">Catches: monster diffs, missing file lists. Perfect paperwork does not excuse a 900-line blob.</p></section>
+
+  <section class="panel guide-section"><h2>4 · VERIFY — "Tests are proof"</h2>
+    <p>A <code>testReport</code> with the <code>command</code> that ran and real counts (<code>passed &gt; 0</code>, <code>failed === 0</code>). If the diff touches UI files (<code>.html/.css/.jsx/...</code>), a <code>runtimeCheck</code> with a tool and observations is required too.</p>
+    <p class="muted">Catches: missing reports, hollow reports (<code>passed: true</code>), failing suites, UI changes never seen running — and the "probably works" / "flaky" / "clicked through it" excuses.</p></section>
+
+  <section class="panel guide-section"><h2>5 · REVIEW — "Improve code health"</h2>
+    <p>A <code>securityScan</code> (tool + findings list — an empty list is valid evidence, untriaged findings are not) and a non-empty <code>selfReview</code> checklist.</p>
+    <p class="muted">Catches: filled-but-hollow evidence — the "rationalized" agent submits a real scan and still fails, because findings were left untriaged while it claimed "low-risk, triage after merge."</p></section>
+
+  <section class="panel guide-section"><h2>6 · SHIP — "Faster is safer"</h2>
+    <p>A <code>release</code> record: a <code>prDescription</code> a human can review, a <code>rollback</code> plan, and a <code>docsNote</code> (docs updated, or why none were needed).</p>
+    <p class="muted">Catches: unreviewable PRs, no rollback path, and "ship it now" pressure.</p></section>
+
+  <section class="panel guide-section"><h2>Honest limits</h2>
+    <ul>
+      <li><strong>Presence ≠ truth.</strong> The engine checks that evidence exists and is well-formed — it cannot tell whether a test report is real. In the real world, CI produces the evidence; here, the fixture JSON does.</li>
+      <li><strong>The scanner is a string match.</strong> It catches phrased excuses, not sophisticated ones — a model trained on the corpus could learn to phrase around it. Real anti-rationalization lives in the review culture, not the regex.</li>
+      <li><strong>Markdown is persuasive, not enforced.</strong> The real Agent Skills pack is instructions an agent can still ignore — the lab models the <em>ideal</em>: a gate that cannot be talked past.</li>
+      <li><strong>Thresholds are illustrative.</strong> 12 files / 400 insertions are teaching numbers, not universal limits — the actual pack argues for ~100-line reviewable changes.</li>
+    </ul>
+    <p>This is an educational demo, not production infrastructure.</p></section>
+</main>
+<!-- pb-shell --><a class="pb-shell" href="https://github.com/anhquanbd2021/agent-skills-discipline" title="agent-skills-discipline — an Article Playbook demo (view source)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="2" y="2" width="9" height="9" rx="2" fill="#2dd4bf"/><rect x="13" y="2" width="9" height="9" rx="2" fill="#2dd4bf" opacity=".45"/><rect x="2" y="13" width="9" height="9" rx="2" fill="#2dd4bf" opacity=".45"/><rect x="13" y="13" width="9" height="9" rx="4.5" fill="#2dd4bf"/></svg><b>agent-skills-discipline</b><i>DEMO</i></a><!-- pb-shell --><!-- pb-back --><a class="pb-back" id="pb-back" href="https://github.com/anhquanbd2021/agent-skills-discipline" title="Back to the article — agent-skills-discipline">← Article <i>PLAYBOOK</i></a><script>(function(){var a=document.getElementById('pb-back');if(!a)return;var h=location.hostname;if(/^(localhost|127\.0\.0\.1|192\.168\.|10\.|172\.(1[6-9]|2[0-9]|3[01])\.)/.test(h)){a.href='//'+h+':'+(/^(localhost|127\.0\.0\.1)$/.test(h)?'1234':'30082')+'/microsites/article.html?slug=agent-skills-discipline';}})();</script><!-- pb-back --></body>
+</html>
